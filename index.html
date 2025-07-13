@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <!-- Chosen Palette: Vibrant Professional Blue -->
 <!-- 
-Application Structure Plan: The application now uses a central vertical timeline structure. On larger screens, cards alternate on either side of this timeline, creating a classic roadmap feel. On mobile, they align to one side for a clean, single-column view. This structure visually reinforces the step-by-step process. The core "focus mode" interaction is retained, allowing users to click a card to expand it, which scales up the selected card and fades out the others, providing a clear, distraction-free view of the details.
+Application Structure Plan: The application uses a responsive grid layout. The core interaction has been evolved to a "focus mode". When a user clicks a card, it scales up, while other cards scale down and fade. This creates a modal-like experience without leaving the page, focusing the user's attention on the details of a single step. This structure enhances usability by preventing distraction and making the selected content the clear hero element.
 -->
 <!-- 
 Visualization & Content Choices: 
-- Report Info: 7-step project roadmap. Goal: Organize/Change. Viz/Method: Interactive Vertical Timeline with alternating cards. Interaction: Click a card to trigger focus mode (scale up, fade others). Justification: This combines the clarity of a linear timeline with the engaging interactivity of the focus grid, offering the best of both worlds. Implemented with HTML/Tailwind and CSS pseudo-elements for the connecting lines.
-- Report Info: Key Activities for each step. Goal: Inform/Organize. Viz/Method: Conditionally visible list within the active card. Interaction: Visibility is toggled by the parent card's active state. Justification: Maintains a clean overview by default, revealing details on demand. Implemented with Vanilla JavaScript.
-- Report Info: Step Patterns. Goal: Inform/Enhance. Viz/Method: Subtle background patterns on each card. Interaction: N/A. Justification: Adds visual texture and thematic context. Implemented using CSS background images.
+- Report Info: 7-step project roadmap. Goal: Organize. Viz/Method: Interactive Focus-Grid. Interaction: Click a card to scale it up and fade/shrink others. Click again to reset. Justification: This advanced interaction is more engaging and provides a clearer focus on the selected step's details, improving comprehension. Implemented with HTML/Tailwind CSS Grid and advanced JS state management.
+- Report Info: Key Activities for each step. Goal: Inform/Organize. Viz/Method: Conditionally visible list within the active card. Interaction: Visibility is toggled by the parent card's active state. Justification: Details are revealed only when the user explicitly requests them by clicking a card, adhering to the principle of progressive disclosure. Implemented with Vanilla JavaScript.
+- Report Info: Step Patterns. Goal: Inform/Enhance. Viz/Method: Subtle background patterns on each card. Interaction: N/A. Justification: Adds visual interest and thematic context to each step without distracting from the content. Implemented using CSS background images with Base64 encoded data URLs to remain self-contained.
 -->
 <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 <html lang="fa" dir="rtl">
@@ -62,7 +62,7 @@ Visualization & Content Choices:
             padding-top: 1rem;
             padding-bottom: 1.5rem;
         }
-        
+
         /* Focus Mode Styles */
         .steps-container.has-active-card .step-card:not(.is-active) {
             transform: scale(0.95);
@@ -96,60 +96,6 @@ Visualization & Content Choices:
         .step-card.is-active .details-list-bullet {
             color: #93c5fd; /* blue-300 */
         }
-
-        /* Timeline Path Styles */
-        .timeline-wrapper {
-            position: relative;
-        }
-        .timeline-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background-color: #e2e8f0; /* slate-200 */
-            border-radius: 2px;
-            right: calc(50% - 2px);
-        }
-        .timeline-item {
-            position: relative;
-        }
-        .timeline-item::after {
-            content: '';
-            position: absolute;
-            top: 3.25rem; /* Adjust to align with the icon center */
-            height: 4px;
-            width: 2.5rem; /* 40px */
-            background-color: #e2e8f0; /* slate-200 */
-            z-index: -1;
-        }
-        .timeline-item:nth-child(odd) {
-            padding-left: calc(50% + 2.5rem);
-        }
-        .timeline-item:nth-child(even) {
-            padding-right: calc(50% + 2.5rem);
-        }
-        .timeline-item:nth-child(odd)::after {
-            left: calc(50% - 2.5rem);
-        }
-        .timeline-item:nth-child(even)::after {
-            right: calc(50% - 2.5rem);
-        }
-        
-        @media (max-width: 767px) {
-            .timeline-wrapper::before {
-                right: 1.5rem;
-            }
-            .timeline-item {
-                padding-right: 4.5rem !important;
-                padding-left: 0 !important;
-            }
-            .timeline-item::after {
-                right: 1.5rem !important;
-                left: auto !important;
-                width: 1.5rem !important;
-            }
-        }
         
         /* Background Patterns */
         .pattern-planning::before { background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E"); background-position: top -20px right -20px; }
@@ -172,136 +118,122 @@ Visualization & Content Choices:
             <p class="text-xl text-slate-600 mt-4">مراحل ۷ گانه طراحی وب‌سایت وردپرسی</p>
         </div>
 
-        <div class="steps-container timeline-wrapper max-w-4xl mx-auto">
+        <div class="steps-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
             
             <!-- Step Cards -->
-            <div class="timeline-item">
-                <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-planning">
-                    <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۱</span>
-                    <div class="card-content">
-                        <div class="step-header p-6">
-                            <div class="flex items-center">
-                                <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">💡</div>
-                                <h3 class="font-bold text-xl mr-4">برنامه‌ریزی</h3>
-                            </div>
+            <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-planning">
+                <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۱</span>
+                <div class="card-content">
+                    <div class="step-header p-6">
+                        <div class="flex items-center">
+                            <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">💡</div>
+                            <h3 class="font-bold text-xl mr-4">برنامه‌ریزی</h3>
                         </div>
-                        <div class="details-hidden px-6 pb-6">
-                            <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">این مرحله، سنگ بنای موفقیت پروژه شماست. ما در جلسه‌ای مشترک، با هدف درک عمیق اهداف کسب‌وکار شما، نیازمندی‌ها را به طور دقیق شناسایی می‌کنیم.</p>
-                            <strong class="block font-bold text-sm mt-4 mb-2">فعالیت‌های کلیدی:</strong>
-                            <ul class="space-y-2 text-sm list-inside">
-                               <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>جلسه شناخت اهداف و مخاطبان.</span></li>
-                               <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>تهیه لیست دقیق امکانات سایت.</span></li>
-                               <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>مشاوره تخصصی دامنه و هاست.</span></li>
-                            </ul>
-                        </div>
+                    </div>
+                    <div class="details-hidden px-6 pb-6">
+                        <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">این مرحله، سنگ بنای موفقیت پروژه شماست. ما در جلسه‌ای مشترک، با هدف درک عمیق اهداف کسب‌وکار شما، نیازمندی‌ها را به طور دقیق شناسایی می‌کنیم.</p>
+                        <strong class="block font-bold text-sm mt-4 mb-2">فعالیت‌های کلیدی:</strong>
+                        <ul class="space-y-2 text-sm list-inside">
+                           <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>جلسه شناخت اهداف و مخاطبان.</span></li>
+                           <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>تهیه لیست دقیق امکانات سایت.</span></li>
+                           <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>مشاوره تخصصی دامنه و هاست.</span></li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            <div class="timeline-item">
-                <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-theme">
-                     <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۲</span>
-                     <div class="card-content">
-                        <div class="step-header p-6">
-                            <div class="flex items-center">
-                                <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">🎨</div>
-                                <h3 class="font-bold text-xl mr-4">انتخاب قالب</h3>
-                            </div>
+            <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-theme">
+                 <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۲</span>
+                 <div class="card-content">
+                    <div class="step-header p-6">
+                        <div class="flex items-center">
+                            <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">🎨</div>
+                            <h3 class="font-bold text-xl mr-4">انتخاب قالب</h3>
                         </div>
-                        <div class="details-hidden px-6 pb-6">
-                            <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">در این مرحله، یک قالب حرفه‌ای و مدرن را که با اهداف شما همخوانی دارد، انتخاب کرده و آن را برای تطبیق با هویت بصری برند شما آماده می‌کنیم.</p>
-                            <strong class="block font-bold text-sm mt-4 mb-2">فعالیت‌های کلیدی:</strong>
-                            <ul class="space-y-2 text-sm list-inside">
-                               <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>تحقیق و ارائه چند گزینه قالب حرفه‌ای.</span></li>
-                               <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>انتخاب نهایی قالب توسط شما.</span></li>
-                               <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>تعریف پالت رنگی و فونت‌های برند.</span></li>
-                            </ul>
-                        </div>
+                    </div>
+                    <div class="details-hidden px-6 pb-6">
+                        <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">در این مرحله، یک قالب حرفه‌ای و مدرن را که با اهداف شما همخوانی دارد، انتخاب کرده و آن را برای تطبیق با هویت بصری برند شما آماده می‌کنیم.</p>
+                        <strong class="block font-bold text-sm mt-4 mb-2">فعالیت‌های کلیدی:</strong>
+                        <ul class="space-y-2 text-sm list-inside">
+                           <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>تحقیق و ارائه چند گزینه قالب حرفه‌ای.</span></li>
+                           <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>انتخاب نهایی قالب توسط شما.</span></li>
+                           <li class="flex items-start"><span class="details-list-bullet text-blue-500 ml-2 mt-1">▪</span><span>تعریف پالت رنگی و فونت‌های برند.</span></li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            <div class="timeline-item">
-                <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-setup">
-                     <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۳</span>
-                     <div class="card-content">
-                        <div class="step-header p-6">
-                            <div class="flex items-center">
-                                <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">🚀</div>
-                                <h3 class="font-bold text-xl mr-4">راه‌اندازی</h3>
-                            </div>
+            <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-setup">
+                 <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۳</span>
+                 <div class="card-content">
+                    <div class="step-header p-6">
+                        <div class="flex items-center">
+                            <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">🚀</div>
+                            <h3 class="font-bold text-xl mr-4">راه‌اندازی</h3>
                         </div>
-                        <div class="details-hidden px-6 pb-6">
-                            <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">برپایی زیرساخت فنی وب‌سایت بر روی هاست و آماده‌سازی محیط وردپرس برای سفارشی‌سازی.</p>
-                        </div>
+                    </div>
+                    <div class="details-hidden px-6 pb-6">
+                        <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">برپایی زیرساخت فنی وب‌سایت بر روی هاست و آماده‌سازی محیط وردپرس برای سفارشی‌سازی.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="timeline-item">
-                <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-customize">
-                     <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۴</span>
-                     <div class="card-content">
-                        <div class="step-header p-6">
-                            <div class="flex items-center">
-                                <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">✏️</div>
-                                <h3 class="font-bold text-xl mr-4">سفارشی‌سازی</h3>
-                            </div>
+            <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-customize">
+                 <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۴</span>
+                 <div class="card-content">
+                    <div class="step-header p-6">
+                        <div class="flex items-center">
+                            <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">✏️</div>
+                            <h3 class="font-bold text-xl mr-4">سفارشی‌سازی</h3>
                         </div>
-                        <div class="details-hidden px-6 pb-6">
-                            <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">تبدیل قالب آماده به یک وب‌سایت کاملاً اختصاصی و منحصربه‌فرد برای برند شما.</p>
-                        </div>
+                    </div>
+                    <div class="details-hidden px-6 pb-6">
+                        <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">تبدیل قالب آماده به یک وب‌سایت کاملاً اختصاصی و منحصربه‌فرد برای برند شما.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="timeline-item">
-                <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-test">
-                     <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۵</span>
-                     <div class="card-content">
-                        <div class="step-header p-6">
-                            <div class="flex items-center">
-                                <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">✔️</div>
-                                <h3 class="font-bold text-xl mr-4">تست نهایی</h3>
-                            </div>
+            <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-test">
+                 <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۵</span>
+                 <div class="card-content">
+                    <div class="step-header p-6">
+                        <div class="flex items-center">
+                            <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">✔️</div>
+                            <h3 class="font-bold text-xl mr-4">تست نهایی</h3>
                         </div>
-                        <div class="details-hidden px-6 pb-6">
-                            <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">اطمینان از عملکرد بی‌نقص، امنیت و سرعت بالای وب‌سایت قبل از انتشار رسمی.</p>
-                        </div>
+                    </div>
+                    <div class="details-hidden px-6 pb-6">
+                        <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">اطمینان از عملکرد بی‌نقص، امنیت و سرعت بالای وب‌سایت قبل از انتشار رسمی.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="timeline-item">
-                <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-training">
-                     <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۶</span>
-                     <div class="card-content">
-                        <div class="step-header p-6">
-                            <div class="flex items-center">
-                                <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">🎓</div>
-                                <h3 class="font-bold text-xl mr-4">آموزش</h3>
-                            </div>
+            <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-training">
+                 <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۶</span>
+                 <div class="card-content">
+                    <div class="step-header p-6">
+                        <div class="flex items-center">
+                            <div class="icon-wrapper flex-shrink-0 bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">🎓</div>
+                            <h3 class="font-bold text-xl mr-4">آموزش</h3>
                         </div>
-                        <div class="details-hidden px-6 pb-6">
-                            <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">انتشار عمومی وب‌سایت و توانمندسازی شما برای مدیریت مستقل محتوای آن.</p>
-                        </div>
+                    </div>
+                    <div class="details-hidden px-6 pb-6">
+                        <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">انتشار عمومی وب‌سایت و توانمندسازی شما برای مدیریت مستقل محتوای آن.</p>
                     </div>
                 </div>
             </div>
             
-            <div class="timeline-item">
-                <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-support">
-                     <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۷</span>
-                     <div class="card-content">
-                        <div class="step-header p-6">
-                            <div class="flex items-center">
-                                <div class="icon-wrapper flex-shrink-0 bg-emerald-100 text-emerald-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">🛡️</div>
-                                <h3 class="font-bold text-xl mr-4">پشتیبانی و نگهداری</h3>
-                            </div>
+            <div class="step-card rounded-2xl shadow-lg border-2 border-transparent pattern-support md:col-span-2 lg:col-span-3">
+                 <span class="card-number absolute top-3 left-5 text-6xl font-black text-slate-200/50 z-0 transition-colors">۰۷</span>
+                 <div class="card-content">
+                    <div class="step-header p-6">
+                        <div class="flex items-center">
+                            <div class="icon-wrapper flex-shrink-0 bg-emerald-100 text-emerald-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl">🛡️</div>
+                            <h3 class="font-bold text-xl mr-4">پشتیبانی و نگهداری</h3>
                         </div>
-                        <div class="details-hidden px-6 pb-6">
-                            <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">همکاری ما با راه‌اندازی به پایان نمی‌رسد. برای تضمین امنیت و پایداری سایت، خدمات پشتیبانی فنی، به‌روزرسانی‌های امنیتی و پشتیبان‌گیری منظم ارائه خواهد شد.</p>
-                        </div>
+                    </div>
+                    <div class="details-hidden px-6 pb-6">
+                        <p class="text-sm leading-relaxed pt-4 border-t border-slate-200">همکاری ما با راه‌اندازی به پایان نمی‌رسد. برای تضمین امنیت و پایداری سایت، خدمات پشتیبانی فنی، به‌روزرسانی‌های امنیتی و پشتیبان‌گیری منظم ارائه خواهد شد.</p>
                     </div>
                 </div>
             </div>
@@ -352,3 +284,4 @@ Visualization & Content Choices:
 
 </body>
 </html>
+
